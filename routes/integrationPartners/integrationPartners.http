@@ -1,6 +1,6 @@
-# @baseUrl = https://localhost:5001
-@baseUrl = http://plankton-app-7mjie.ondigitalocean.app
+ @baseUrl = https://localhost:5001
 
+#@baseUrl = http://plankton-app-7mjie.ondigitalocean.app
 ###
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // integrationData

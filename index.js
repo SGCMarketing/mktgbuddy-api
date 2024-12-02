@@ -91,7 +91,8 @@ async function main() {
     logger.info(`Starting mktgBuddy API version ${SETTINGS_VERSION_NUMBER}.`)
 
     if (!process.env.MONGODB_URI) {
-        logger.error('Could not find environment variable MONGODB_URI.')
+        logger.error('Could not find environment variable MONGODB_URI. Service will now terminate.')
+        return
     }
 
     try {
@@ -99,8 +100,11 @@ async function main() {
         logger.info(`Connected to ${connection.connections[0].name} database hosted at ${connection.connections[0].host}:${connection.connections[0].port}.`)
 
         // SSL options
-        // const httpsOptions = { key: fs.readFileSync('server.key'), cert: fs.readFileSync('server.cert') }
-        const httpsOptions = {}
+        let httpsOptions = {}
+        if (process?.env?.BUILD_LOCATION === 'local') {
+            logger.info('API is running locally so loading SSL certificates.')
+            httpsOptions = { key: fs.readFileSync('server.key'), cert: fs.readFileSync('server.cert') }
+        }
 
         // Use https to create the server
         const server = await https.createServer(httpsOptions, app).listen(process.env.PORT, '0.0.0.0')
