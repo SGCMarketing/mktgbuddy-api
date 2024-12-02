@@ -11,3 +11,9 @@
 
 #!.yarn/cache
 .pnp.*
+
+.DS_Store
+.env
+*.dmm
+server.cert
+server.key
