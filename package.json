@@ -1,6 +1,6 @@
 {
   "name": "mktgbuddy-api",
-  "packageManager": "yarn@4.5.0",
+  "packageManager": "yarn@4.5.3",
   "type": "module",
   "dependencies": {
     "@sendgrid/mail": "^8.1.3",
