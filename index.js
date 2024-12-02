@@ -95,7 +95,8 @@ async function main() {
         logger.info(`Connected to ${connection.connections[0].name} database hosted at ${connection.connections[0].host}:${connection.connections[0].port}.`)
 
         // SSL options
-        const httpsOptions = { key: fs.readFileSync('server.key'), cert: fs.readFileSync('server.cert') }
+        // const httpsOptions = { key: fs.readFileSync('server.key'), cert: fs.readFileSync('server.cert') }
+        const httpsOptions = {}
 
         // Use https to create the server
         const server = await https.createServer(httpsOptions, app).listen(process.env.PORT, '0.0.0.0')
