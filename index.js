@@ -110,7 +110,7 @@ async function main() {
             server = await https.createServer(httpsOptions, app).listen(process.env.LOCAL_PORT, '0.0.0.0')
         } else {
             logger.info('API is running remotely.')
-            server = await http.createServer(app)
+            server = await http.createServer(app).listen(process.env.LOCAL_PORT)
         }
 
         logger.info(`API ready on port ${process.env.LOCAL_PORT}.`)
