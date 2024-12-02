@@ -90,6 +90,10 @@ async function main() {
     logger.func(`index.js -> main()`)
     logger.info(`Starting mktgBuddy API version ${SETTINGS_VERSION_NUMBER}.`)
 
+    if (!process.env.MONGODB_URI) {
+        logger.error('Could not find environment variable MONGODB_URI.')
+    }
+
     try {
         const connection = await mongoose.connect(process.env.MONGODB_URI)
         logger.info(`Connected to ${connection.connections[0].name} database hosted at ${connection.connections[0].host}:${connection.connections[0].port}.`)
