@@ -91,7 +91,7 @@ const logger = () => {
     const request = (req) => {
         msgStack.push({ type: 'request', msg: req?.method })
         if (!processing) processStack()
-        _printLogToConsole(`${newLine}${loggerInstance.penStart.brightCyan}\nREQ: ${req?.method} ${req?.url}\n${newLine}${loggerInstance.penEnd}\n`)
+        _printLogToConsole(`${newLine}${loggerInstance.penStart.brightCyan}\nREQ: ${req?.method} ${req?.url}${loggerInstance.penEnd}\n${newLine}\n`)
     }
 
     const info = (msg) => {
