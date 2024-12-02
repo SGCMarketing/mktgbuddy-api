@@ -108,6 +108,7 @@ async function main() {
 
         // Use https to create the server
         const server = await https.createServer(httpsOptions, app).listen(process.env.PORT, '0.0.0.0')
+
         logger.info(`API ready on ${logger.penStart.yellow}https://localhost:${process.env.PORT}${logger.penEnd}.`)
 
         // Add an error handler to capture server errors like EADDRINUSE
