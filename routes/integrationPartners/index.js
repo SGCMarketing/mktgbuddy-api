@@ -31,7 +31,6 @@ export async function create() {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export async function read(req, res) {
     logger.func(`integrationPartners/index.js -> read()`)
-    logger.info(`${logger.penStart.yellow}IntegrationPartner.read (${JSON.stringify(req.findObject)})${logger.penEnd}`)
 
     res.data = integrationPartners
 }

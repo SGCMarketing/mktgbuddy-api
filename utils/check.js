@@ -63,14 +63,6 @@ async function checkAuth(req) {
     logger.func(`check.js -> checkAuth()`)
 
     try {
-        const noAuthRequiredObjects = new Set(['users:POST', 'integrationPartners:GET', 'integrationApproval:PATCH', 'integrationApproval:POST', 'integrationApproval:GET', 'integrationApproval:DELETE'])
-
-        if (noAuthRequiredObjects.has(`${req.params.object}:${req.method}`)) {
-            logger.info(`${req.params.object} access does not require authentication, bypassing.`)
-            req.authData = 'NoAuthRequired'
-            return
-        }
-
         // Verify JWT token
         const authData = await jwt.verify(req.headers.token, process.env.TOKEN_ACCESS_SECRET)
         delete authData.iat

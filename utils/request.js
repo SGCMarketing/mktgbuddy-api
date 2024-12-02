@@ -20,6 +20,8 @@ import response from './response.js'
 
 import errorMessages from './responseErrors.js'
 
+const noAuthRequiredObjects = new Set(['users:POST', 'integrationPartners:GET', 'integrationApproval:PATCH', 'integrationApproval:POST', 'integrationApproval:GET', 'integrationApproval:DELETE'])
+
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // processRequest
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -45,7 +47,10 @@ async function processRequest(req, res) {
 
         const action = actions[req.method]
 
-        if (object !== 'models') {
+        if (noAuthRequiredObjects.has(`${req.params.object}:${req.method}`)) {
+            logger.info(`${req.params.object} access does not require authentication, bypassing.`)
+            req.authData = 'NoAuthRequired'
+        } else {
             await check.checkAuth(req, res)
             await check.preCheck(req, res)
         }
