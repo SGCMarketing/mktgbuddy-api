@@ -107,13 +107,13 @@ async function main() {
         if (process?.env?.BUILD_LOCATION === 'local') {
             logger.info('API is running locally so loading SSL certificates.')
             httpsOptions = { key: fs.readFileSync('server.key'), cert: fs.readFileSync('server.cert') }
-            server = await https.createServer(httpsOptions, app).listen(process.env.LOCAL_PORT, '0.0.0.0')
+            server = await https.createServer(httpsOptions, app).listen(process.env.PORT, '0.0.0.0')
+            logger.info(`API ready on port ${process.env.PORT}.`)
         } else {
             logger.info('API is running remotely.')
-            server = await http.createServer(app).listen(process.env.LOCAL_PORT)
+            server = await http.createServer(app).listen(process.env.PORT)
+            logger.info(`API ready on port ${process.env.PORT}.`)
         }
-
-        logger.info(`API ready on port ${process.env.LOCAL_PORT}.`)
 
         // Add an error handler to capture server errors like EADDRINUSE
         server.on('error', (error) => {
