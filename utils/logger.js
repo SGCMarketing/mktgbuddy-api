@@ -91,7 +91,7 @@ const logger = () => {
     const request = (req) => {
         msgStack.push({ type: 'request', msg: req?.method })
         if (!processing) processStack()
-        _printLogToConsole(`${newLine}${loggerInstance.penStart.brightCyan}REQ: ${req?.method} ${req?.url}${newLine}${loggerInstance.penEnd}`)
+        _printLogToConsole(`${loggerInstance.penStart.brightCyan}${newLine}REQ: ${req?.method} ${req?.url}${newLine}${loggerInstance.penEnd}`)
     }
 
     const info = (msg) => {
@@ -131,7 +131,7 @@ loggerInstance.penStart = {
 }
 loggerInstance.penEnd = '\u001b[0m' // Reset ANSI colors
 
-const newLine = `----------------------------------------------------------------------------------`
+const newLine = `\n----------------------------------------------------------------------------------\n`
 
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // Export
