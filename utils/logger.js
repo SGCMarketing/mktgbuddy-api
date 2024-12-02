@@ -53,10 +53,11 @@
 // Print msg to console
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const _printLogToConsole = async (msg) => {
-    const date = new Date()
-    const formattedTime = [date.getHours(), date.getMinutes(), date.getSeconds()].map((unit) => String(unit).padStart(2, '0')).join(':') + `:${String(date.getMilliseconds()).padStart(3, '0')}`
-
-    console.log(`${formattedTime}: ${msg}`)
+    if (process?.env?.BUILD_LOCATION === 'local') {
+        const date = new Date()
+        const formattedTime = [date.getHours(), date.getMinutes(), date.getSeconds()].map((unit) => String(unit).padStart(2, '0')).join(':') + `:${String(date.getMilliseconds()).padStart(3, '0')}`
+        console.log(`${formattedTime}: ${msg}`)
+    } else console.log(msg)
 
     await new Promise((resolve) => setTimeout(resolve, 100))
 }
@@ -75,7 +76,6 @@ const logger = () => {
 
         while (msgStack.length > 0) {
             const { type, msg } = msgStack.shift() // Get the first message
-
             // await _postToBetterStack(`[${type.toUpperCase()}]: ${msg}`) // Post to BetterStack with message type
         }
 

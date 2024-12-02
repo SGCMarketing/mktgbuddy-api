@@ -33,9 +33,7 @@ async function processRequest(req, res) {
 
         const { object, id } = req.params
 
-        if (!check.model[object]) {
-            throw 'APICallNotSupported'
-        }
+        if (!check.model[object]) throw 'APICallNotSupported'
 
         // Define the allowed methods and their corresponding model actions
         const actions = {

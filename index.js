@@ -97,8 +97,8 @@ async function main() {
     }
 
     try {
-        // const connection = await mongoose.connect(process.env.MONGODB_URI)
-        // logger.info(`Connected to ${connection.connections[0].name} database hosted at ${connection.connections[0].host}:${connection.connections[0].port}.`)
+        const connection = await mongoose.connect(process.env.MONGODB_URI)
+        logger.info(`Connected to ${connection.connections[0].name} database hosted at ${connection.connections[0].host}:${connection.connections[0].port}.`)
 
         let server
 
