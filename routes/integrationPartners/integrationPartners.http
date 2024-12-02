@@ -1,6 +1,6 @@
-#@baseUrl = https://localhost:5001
+@baseUrl = https://localhost:5001
 
-@baseUrl = https://api.mktgbuddy.com
+#@baseUrl = https://api.mktgbuddy.com
 ###
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // integrationData

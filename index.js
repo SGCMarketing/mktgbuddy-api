@@ -3,6 +3,7 @@ import cors from 'cors'
 import express from 'express'
 import mongoose from 'mongoose'
 import env from 'dotenv'
+import http from 'http'
 import https from 'https' // Add https
 import fs from 'fs' // Add fs to read certificate files
 
@@ -99,17 +100,20 @@ async function main() {
         const connection = await mongoose.connect(process.env.MONGODB_URI)
         logger.info(`Connected to ${connection.connections[0].name} database hosted at ${connection.connections[0].host}:${connection.connections[0].port}.`)
 
+        let server
+
         // SSL options
         let httpsOptions = {}
         if (process?.env?.BUILD_LOCATION === 'local') {
             logger.info('API is running locally so loading SSL certificates.')
             httpsOptions = { key: fs.readFileSync('server.key'), cert: fs.readFileSync('server.cert') }
+            server = await https.createServer(httpsOptions, app).listen(process.env.LOCAL_PORT, '0.0.0.0')
+        } else {
+            logger.info('API is running remotely.')
+            server = await https.createServer(app).listen(process.env.PORT, '0.0.0.0')
         }
 
-        // Use https to create the server
-        const server = await https.createServer(httpsOptions, app).listen(process.env.PORT, '0.0.0.0')
-
-        logger.info(`API ready on ${logger.penStart.yellow}https://localhost:${process.env.PORT}${logger.penEnd}.`)
+        logger.info(`API ready on ${logger.penStart.yellow}https://localhost:${process.env.LOCAL_PORT}${logger.penEnd}.`)
 
         // Add an error handler to capture server errors like EADDRINUSE
         server.on('error', (error) => {
