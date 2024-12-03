@@ -122,7 +122,7 @@ export async function update(req, res) {
     // Do the update
     await userModel.findOneAndUpdate({ _id: req.params.id }, { $set: dot.dot(req.body) }, { runValidators: true })
 
-    let updatedUser = await userModel.findById(req.params.id)
+    let updatedUser = await userModel.findById(req.params.id).lean()
     updatedUser.refreshToken = undefined
 
     res.data = [updatedUser]

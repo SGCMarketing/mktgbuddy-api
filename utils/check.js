@@ -114,7 +114,7 @@ async function preCheck(req) {
     if (req.method) {
         // If the object is a User then return only the User logged in, otherwise return any objects owned or shared by this User
         if (req.params.object === 'users' || req.params.object === 'integrationApproval') {
-            req.findObject = { _id: req?.params?.id }
+            req.findObject = { _id: req?.authData?._id }
         } else if (req.params.object === 'clients') {
             req.findObject = {
                 $and: [...(req?.params?.id ? [{ _id: req.params.id }] : [])]
