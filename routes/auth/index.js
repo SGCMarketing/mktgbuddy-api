@@ -41,8 +41,7 @@ async function _generateAccessToken(user) {
             _id: user._id,
             email: user.email,
             authToken: await jwt.sign(userPayload, process.env.TOKEN_ACCESS_SECRET, { expiresIn: process.env.AUTH_TOKEN_TIMEOUT }),
-            refreshToken: await jwt.sign(userPayload, process.env.TOKEN_REFRESH_SECRET, { expiresIn: process.env.REFRESH_TOKEN_TIMEOUT }),
-            refreshTokenTimeout: Number(process.env.REFRESH_TOKEN_TIMEOUT)
+            refreshToken: await jwt.sign(userPayload, process.env.TOKEN_REFRESH_SECRET, { expiresIn: process.env.REFRESH_TOKEN_TIMEOUT })
         }
     } catch (error) {
         throw error
