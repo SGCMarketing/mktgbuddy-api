@@ -73,7 +73,7 @@ const _fetchTotalByMonth = async (object, year, month) => {
 export const objectFetch = {
     // CRM
     // ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    crm: {
+    company: {
         tile: [
             {
                 shortName: 'totalCompanies',
