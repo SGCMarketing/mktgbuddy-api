@@ -91,7 +91,8 @@ const logger = () => {
     const request = (req) => {
         msgStack.push({ type: 'request', msg: req?.method })
         if (!processing) processStack()
-        _printLogToConsole(`${newLine}${loggerInstance.penStart.brightCyan}\nREQ: ${req?.method} ${req?.url}${loggerInstance.penEnd}\n${newLine}\n`)
+        if (process?.env?.BUILD_LOCATION === 'local') _printLogToConsole(`\n              ${newLine}${loggerInstance.penStart.brightCyan}\n              REQ: ${req?.method} ${req?.url}${loggerInstance.penEnd}\n              ${newLine}`)
+        else _printLogToConsole(`${newLine}${loggerInstance.penStart.brightCyan}\nREQ: ${req?.method} ${req?.url}${loggerInstance.penEnd}\n${newLine}\n`)
     }
 
     const info = (msg) => {

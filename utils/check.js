@@ -96,7 +96,7 @@ async function preCheck(req) {
     if ((req.method === 'PATCH' || req.method === 'POST') && Object.keys(req.body).length === 0) throw 'InvalidJSONBodyError'
 
     // Validate ID if provided in params
-    if (req.params.id) {
+    if (req?.params?.id && req?.params?.object !== 'models') {
         if (!mongoose.isValidObjectId(req.params.id)) throw 'InvalidIDError'
         req.findObject._id = req.params.id
     }
