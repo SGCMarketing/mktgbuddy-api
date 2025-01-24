@@ -36,15 +36,12 @@ export async function create(req, res) {
     try {
         req.body = clientFunction.cleanRequest(req.body)
 
+        // Has the Client got a name?
         if (!req?.body?.name) throw 'ClientMustHaveNameError'
-        if (!req?.body?.clientPrefix) throw 'ClientMustHavePrefixError'
-        if ('clientPrefix' in req.body && req.body.clientPrefix.length !== 4) {
-            throw 'ClientPrefixLengthError'
-        }
 
-        // Object ownership (created by and updated by) cannot be set manually
-        if ('objectOwnership' in req.body && 'created' in req.body.objectOwnership) delete req.body.objectOwnership.created
-        if ('objectOwnership' in req.body && 'updated' in req.body.objectOwnership) delete req.body.objectOwnership.updated
+        // Has the Client got a prefix and is it 4 characters long?
+        if (!req?.body?.clientPrefix) throw 'ClientMustHavePrefixError'
+        if ('clientPrefix' in req.body && req.body.clientPrefix.length !== 4) throw 'ClientPrefixLengthError'
 
         req.body.objectOwnership = {
             created: { by: req.authData._id },
@@ -63,7 +60,19 @@ export async function create(req, res) {
         logger.info(`Created document with ID ${doc.id}`)
 
         // Retrieve the document and return as response
-        const newDoc = await clientModel.findById(doc.id).lean()
+        const newDoc = await clientModel
+            .findById(doc.id)
+            .lean()
+            .populate([
+                {
+                    path: 'objectOwnership.created.by',
+                    select: 'email'
+                },
+                {
+                    path: 'objectOwnership.updated.by',
+                    select: 'email'
+                }
+            ])
         res.data = await clientFunction.getAdditionalData(req, [newDoc])
     } catch (error) {
         if (error.name == 'MongoServerError') {
@@ -91,44 +100,24 @@ export async function read(req, res) {
                 }
             ]
         }
-        if (req?.params?.option === 'full') {
-            docs = await clientModel
-                .find(req.findObject)
-                .collation({ locale: 'en', strength: 1 })
-                .lean()
-                .select()
-                .sort({ name: 1 })
-                .populate([
-                    {
-                        path: 'objectOwnership.created.by',
-                        select: 'email'
-                    },
-                    {
-                        path: 'objectOwnership.updated.by',
-                        select: 'email'
-                    }
-                ])
-            logger.info(`Returning ${docs.length} full record(s)`)
-        } else {
-            docs = await clientModel
-                .find(req.findObject)
-                .collation({ locale: 'en', strength: 1 })
-                .lean()
-                .select('name objectOwnership brand createdAt updatedAt')
-                .sort({ name: 1 })
-                .populate([
-                    {
-                        path: 'objectOwnership.created.by',
-                        select: 'email'
-                    },
-                    {
-                        path: 'objectOwnership.updated.by',
-                        select: 'email'
-                    }
-                ])
 
-            logger.info(`Returning ${docs.length} minimal record(s)`)
-        }
+        docs = await clientModel
+            .find(req.findObject)
+            .collation({ locale: 'en', strength: 1 })
+            .lean()
+            .select()
+            .sort({ name: 1 })
+            .populate([
+                {
+                    path: 'objectOwnership.created.by',
+                    select: 'email'
+                },
+                {
+                    path: 'objectOwnership.updated.by',
+                    select: 'email'
+                }
+            ])
+        logger.info(`Returning ${docs.length} record(s)`)
 
         res.data = await clientFunction.cleanResponse(req, docs)
     } catch (error) {

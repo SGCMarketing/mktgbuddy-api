@@ -43,7 +43,7 @@ async function sendSuccessResponse(_, res) {
         if ('objectOwnership' in data[i]) {
             data[i].objectOwnership.created.at = data[i].createdAt
             data[i].objectOwnership.updated.at = data[i].updatedAt
-            // delete data[i].createdAt
+            delete data[i].createdAt
             delete data[i].updatedAt
         }
 

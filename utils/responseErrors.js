@@ -7,11 +7,12 @@ const errorMessages = {
     AuthNoPasswordError: 'You must provide a password to login.',
     AuthNoUserFoundError: `Can't login, there is no user with that email or the password is incorrect.`,
     AuthUserNotEnabled: 'User not enabled.',
+    AuthNoPermissionToDeleteError: 'You do not have permission to delete this object.',
 
     ClientAlreadyExistsError: `A Client with this name and/or prefix already exists.`,
     ClientNotFoundError: 'Client not found.',
     ClientMustHaveNameError: 'Clients must have a name.',
-    ClientMustHavePrefixError: 'Clients must have a unique prefix.',
+    ClientMustHavePrefixError: 'Clients must have a unique clientPrefix.',
     ClientPrefixLengthError: 'Client prefix must be exactly 4 characters in length.',
     ClientCannotBeDeletedWithDependentsError: `Clients cannot be deleted while they have Integrations or Budgets associated to them.`,
 
@@ -52,12 +53,12 @@ const errorMessages = {
     TokenError: 'Problem with token or token User no longer exists, please login and renew your token.',
 
     UserAlreadyExistsError: 'A User with this email address already exists. Please login or request a password reset to continue.',
-    UserCannotCreateUserMissingInformation: 'Account, email, and password must be passed in the body in order to create a new User.',
+    UserCannotCreateUserMissingInformation: 'Email and password must be passed in the body in order to create a new User.',
     UserDisabledError: 'This User has been disabled',
     UserLoginExpiredError: 'You have been logged out. Please login again.',
     UserNoTokenError: 'No token provided in the header or token is invalid.',
     UserNotFoundError: 'User not found.',
-    UserCannotDeleteError: 'You do not have permission to delete this User.'
+    UserPasswordIsInvalid: 'Passwords must be at least 6 characters long and have 1 lowercase and 1 uppercase letters.'
 }
 
 export default errorMessages

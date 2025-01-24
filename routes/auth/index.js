@@ -32,7 +32,7 @@ env.config()
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 async function _generateAccessToken(user) {
     logger.func(`auth/index.js -> _generateAccessToken()`)
-    logger.info(`Generating access token that expires in ${process.env.AUTH_TOKEN_TIMEOUT}`)
+    logger.info(`Generating access token that expires in ${process.env.AUTH_TOKEN_TIMEOUT}.`)
 
     const userPayload = { _id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName }
 
@@ -100,19 +100,20 @@ async function attemptLogin(req, res) {
         // Check we have a password
         if (!req.body.password) throw 'AuthNoPasswordError'
 
+        // Find the User and check it exists
         const user = await userModel.findOne({ email: String(req.body.email).toLowerCase() }).lean()
-
-        // Does the User exist?
         if (!user) throw 'AuthNoUserFoundError'
 
         // Is the User enabled?
         if (!user.options || !user.options.isEnabled || user.options.isEnabled != true) throw 'AuthUserNotEnabled'
 
+        // Check the password
         const passwordOK = await bcrypt.compare(req.body.password, user.passwordHash)
-
         if (passwordOK == true) {
+            // Get the auth and refresh tokens
             const authData = await _generateAccessToken(user)
 
+            // Get the stats on each model the User has
             const modelQuantities = await _getModelQuantities(authData)
 
             // Save the refresh token

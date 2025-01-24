@@ -52,7 +52,7 @@ app['get']('/client/:id/backgroundLogo', async (req, res) => {
 const crudMethods = ['post', 'get', 'patch', 'delete']
 crudMethods.forEach((method) => {
     // Route with :object and :id and :option
-    app[method]('/:object/:id/:option?', async (req, res) => {
+    app[method]('/:object/:id', async (req, res) => {
         await request.processRequest(req, res)
     })
 

@@ -29,19 +29,13 @@ export async function create(req, res) {
     logger.func(`users/index.js -> create()`)
 
     // Check if all data has been provided
-    if (!req.body.email || !req.body.password) {
-        throw 'UserCannotCreateUserMissingInformation'
-    }
+    if (!req.body.email || !req.body.password) throw 'UserCannotCreateUserMissingInformation'
 
     // Is email valid?
-    if (!check.isEmailValid(req.body.email)) {
-        throw 'UserEmailIsInavlid'
-    }
+    if (!check.isEmailValid(req.body.email)) throw 'UserEmailIsInavlid'
 
     // Is password valid?
-    if (!check.isPasswordValid(req.body.password)) {
-        throw 'UserPasswordIsInavlid'
-    }
+    if (!check.isPasswordValid(req.body.password)) throw 'UserPasswordIsInvalid'
 
     // Hash and replace password
     var passwordHash = await bcrypt.hash(req.body.password, 10)
@@ -79,7 +73,6 @@ export async function read(req, res) {
     let users = await userModel.find(req.findObject).collation({ locale: 'en', strength: 2 }).select().lean()
 
     for (var user in users) {
-        // Remove the refresh token
         delete users[user].refreshToken
     }
 
@@ -133,11 +126,6 @@ export async function update(req, res) {
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export async function remove(req) {
     logger.func(`users/index.js -> remove()`)
-
-    // TODO Check that this user can delete the client
-    if (req.authData._id !== req.params.id) {
-        throw 'UserCannotDeleteError'
-    }
 
     // Find the client (does it exist?)
     const userToDelete = await userModel.findOne(req.findObject).lean()

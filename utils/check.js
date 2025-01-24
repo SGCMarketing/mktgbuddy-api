@@ -92,8 +92,8 @@ async function preCheck(req) {
 
     req.findObject = {}
 
-    // Validate JSON body for PATCH and POST requests
-    if ((req.method === 'PATCH' || req.method === 'POST') && Object.keys(req.body).length === 0) throw 'InvalidJSONBodyError'
+    // Is this User a Super Admin?
+    const isSA = await isUserSuperAdmin(req)
 
     // Validate ID if provided in params
     if (req?.params?.id && req?.params?.object !== 'models') {
@@ -112,9 +112,25 @@ async function preCheck(req) {
     }
 
     if (req.method) {
+        // Validate JSON body for PATCH and POST requests
+        if ((req.method === 'PATCH' || req.method === 'POST') && Object.keys(req.body).length === 0) throw 'InvalidJSONBodyError'
+
+        if (req.method === 'DELETE') {
+            if (!isSA && req.authData._id !== req.params.id) throw 'AuthNoPermissionToDeleteError'
+            else logger.info('Object can be deleted as user is Super Admin.')
+        }
+
+        // Object ownership (created by and updated by) cannot be set manually
+        if ('objectOwnership' in req.body && 'created' in req.body.objectOwnership) delete req.body.objectOwnership.created
+        if ('objectOwnership' in req.body && 'updated' in req.body.objectOwnership) delete req.body.objectOwnership.updated
+
         // If the object is a User then return only the User logged in, otherwise return any objects owned or shared by this User
         if (req.params.object === 'users' || req.params.object === 'integrationApproval') {
-            req.findObject = { _id: req?.authData?._id }
+            if (isSA) {
+                if (req.method !== 'DELETE') req.findObject = { _id: req?.authData?._id }
+            } else {
+                req.findObject = { _id: req?.authData?._id }
+            }
         } else if (req.params.object === 'clients') {
             req.findObject = {
                 $and: [...(req?.params?.id ? [{ _id: req.params.id }] : [])]

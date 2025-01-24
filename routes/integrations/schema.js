@@ -26,6 +26,15 @@ export const rawSchema = {
 
     integrationPartner: { type: String, required: true, enum: { values: integrationPartnersShortName } },
 
+    objectOwnership: {
+        created: {
+            by: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'user' }
+        },
+        updated: {
+            by: { type: mongoose.Schema.Types.ObjectId, required: true, ref: 'user' }
+        }
+    },
+
     authentication: {
         method: { type: String, enum: { values: ['I will authenticate', 'Send via email', 'Send via SMS'] }, required: true },
         status: { type: String, enum: { values: ['Send for approval', 'Sent for approval', 'Approved', 'Rejected', 'Connected', 'Disconnected'], required: true, default: 'Send for approval' } },

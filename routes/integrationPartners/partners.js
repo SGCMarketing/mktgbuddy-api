@@ -42,7 +42,7 @@ export const integrationPartners = [
         connectionType: 'tokenAuthentication',
         logo: `${process.env.API_URL}/logo/hubspotLogo.png`,
         object: hubSpotObjectFetch
-    }
+    },
 
     // { shortName: 'instagramAds', name: 'Instagram Ads', status: 'Draft', connectionType: 'unknown', logo: `${process.env.API_URL}/logo/instagramLogo.png` },
 
@@ -52,7 +52,7 @@ export const integrationPartners = [
 
     // { shortName: 'linkedInPages', name: 'LinkedIn Pages', status: 'Draft', connectionType: 'unknown', logo: `${process.env.API_URL}/logo/linkedInLogo.png` },
 
-    // { shortName: 'mailChimp', name: 'MailChimp', status: 'Draft', connectionType: 'unknown', logo: `${process.env.API_URL}/logo/mailChimpLogo.png` },
+    { shortName: 'mailChimp', name: 'MailChimp', status: 'Draft', connectionType: 'unknown', logo: `${process.env.API_URL}/logo/mailChimpLogo.png` }
 
     // { shortName: 'microsoftBingAds', name: 'Microsoft Bing Ads', status: 'Draft', connectionType: 'unknown', logo: `${process.env.API_URL}/logo/bingLogo.png` },
 

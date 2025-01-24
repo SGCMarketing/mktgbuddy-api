@@ -44,6 +44,12 @@ export async function create(req, res) {
             req.body.authentication.status = 'Send for approval'
         }
 
+        // Set created and updated by to the current User
+        req.body.objectOwnership = {
+            created: { by: req.authData._id },
+            updated: { by: req.authData._id }
+        }
+
         // Check if approval needs sending
         req.body = await integrationFunction.checkIfApprovalRequired(req.body)
 
@@ -81,7 +87,17 @@ export async function read(req, res) {
         .collation({ locale: 'en', strength: 1 })
         .lean()
         .select()
-        .populate([{ path: 'client', select: { _id: 1, name: 1, brand: 1 } }])
+        .populate([
+            { path: 'client', select: { _id: 1, name: 1, brand: 1 } },
+            {
+                path: 'objectOwnership.created.by',
+                select: 'email'
+            },
+            {
+                path: 'objectOwnership.updated.by',
+                select: 'email'
+            }
+        ])
 
     if (docs.length === 0) throw 'IntegrationNoIntegrationError'
 
@@ -89,29 +105,26 @@ export async function read(req, res) {
         let doc = docs[i] // Access doc from the docs array
 
         // If test query is present, perform the connection test
-        if (req?.params?.option === 'test') {
+        if (req?.query?.test) {
             logger.info('Test requested')
             try {
                 doc = await integrationFunction.testConnection(doc)
                 await integrationModel.findOneAndUpdate({ _id: doc._id }, { 'authentication.status': 'Connected' }, { new: true, runValidators: true })
-                delete doc.client
             } catch (err) {
                 // Set the integration status to Disconnected
                 await integrationModel.findOneAndUpdate({ _id: doc._id }, { 'authentication.status': 'Disconnected' }, { new: true, runValidators: true })
                 throw err
             }
-        } else if (req?.params?.option === 'fetch') {
+        } else if (req?.query?.fetch) {
             logger.info('Data fetch requested')
             doc = await integrationFunction.fetchData(req, doc)
-            delete doc.client
         }
 
         if (doc?.integrationPartner) {
             // Find the corresponding integration partner by shortName
-            const partner = integrationPartners.find((p) => p.shortName === doc.integrationPartner)
-            if (partner) {
-                doc.integrationPartner = partner
-            }
+            let partner = { ...integrationPartners.find((p) => p.shortName === doc.integrationPartner) }
+            delete partner?.object
+            if (partner) doc.integrationPartner = partner
         }
 
         delete doc.connection
